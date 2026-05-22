@@ -1,0 +1,48 @@
+{
+  "functions": {
+    "source": "functions",
+    "runtime": "python313"
+  },
+  "hosting": {
+    "public": "frontend",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/webhook/emergencia",
+        "function": {
+          "functionId": "satie",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/casos",
+        "function": {
+          "functionId": "satie",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/asegurados",
+        "function": {
+          "functionId": "satie",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/health",
+        "function": {
+          "functionId": "satie",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

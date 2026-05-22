@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SATIE — Tablero de Alerta Temprana e Ingesta de Emergencias</title>
+    <!-- Google Fonts: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Sleek Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="glass-bg-glows">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
+    </div>
+
+    <header class="main-header">
+        <div class="header-brand">
+            <div class="brand-icon">
+                <i class="fa-solid fa-heart-pulse pulse-animation"></i>
+            </div>
+            <div class="brand-text">
+                <h1>SATIE</h1>
+                <p>Sistema de Alerta Temprana de Ingresos a Emergencias</p>
+            </div>
+        </div>
+        <div class="header-status">
+            <div class="status-indicator">
+                <span class="status-dot" id="api-status-dot"></span>
+                <span>API Status: <b id="api-status-text">Verificando...</b></span>
+            </div>
+            <div class="mode-badge">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Demo HackIAthon</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <!-- SECCIÓN 1: ARNES DE PRUEBAS / SIMULADOR -->
+        <section class="panel-section simulator-column" id="simulator-sec">
+            <div class="panel-header">
+                <h2><i class="fa-solid fa-vial"></i> Arnés de Pruebas</h2>
+                <p>Simulador de ingreso a emergencias del Hospital</p>
+            </div>
+
+            <div class="panel-body">
+                <!-- Selector de Pólizas Sintéticas -->
+                <div class="form-group select-poliza-container">
+                    <label for="poliza-selector"><i class="fa-solid fa-user-shield"></i> Seleccionar Asegurado Demo</label>
+                    <div class="custom-select-wrapper">
+                        <select id="poliza-selector" class="form-control">
+                            <option value="" disabled selected>Cargando asegurados demo...</option>
+                        </select>
+                    </div>
+                    <small class="form-help-text" id="poliza-desc-help">Selecciona una póliza preconfigurada para rellenar automáticamente el simulador con su perfil correspondiente.</small>
+                </div>
+
+                <!-- Formulario de Admisión -->
+                <form id="webhook-form" class="admission-form">
+                    <div class="form-grid">
+                        <div class="form-group col-12">
+                            <label for="paciente-nombre">Nombre Completo del Paciente</label>
+                            <input type="text" id="paciente-nombre" class="form-control" placeholder="Ej. Jorge Luis Macías Andrade" required>
+                        </div>
+                        
+                        <div class="form-group col-6">
+                            <label for="paciente-cedula">Cédula de Identidad</label>
+                            <input type="text" id="paciente-cedula" class="form-control" placeholder="Ej. 1305887421" required>
+                        </div>
+
+                        <div class="form-group col-6">
+                            <label for="hospital-nombre">Hospital / Clínica</label>
+                            <input type="text" id="hospital-nombre" class="form-control" placeholder="Ej. Hospital Metropolitano" required>
+                        </div>
+
+                        <div class="form-group col-12">
+                            <label for="motivo-ingreso">Motivo de Ingreso / Síntomas</label>
+                            <textarea id="motivo-ingreso" class="form-control" rows="3" placeholder="Detalle clínico del motivo de ingreso del paciente a emergencias..." required></textarea>
+                        </div>
+
+                        <div class="form-group col-6">
+                            <label for="triaje-hospital">Triaje Inicial (Hospital)</label>
+                            <select id="triaje-hospital" class="form-control">
+                                <option value="Rojo">Rojo (Crítico / Inmediato)</option>
+                                <option value="Naranja">Naranja (Muy Urgente)</option>
+                                <option value="Amarillo" selected>Amarillo (Urgente)</option>
+                                <option value="Verde">Verde (Menor / Leve)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group col-6">
+                            <label for="evento-id">ID de Evento (Opcional)</label>
+                            <input type="text" id="evento-id" class="form-control" placeholder="Autogenerado si está vacío">
+                        </div>
+                    </div>
+
+                    <!-- Signos Vitales -->
+                    <div class="signos-vitales-box">
+                        <h4 class="sub-title"><i class="fa-solid fa-stethoscope"></i> Signos Vitales (Opcional)</h4>
+                        <div class="signos-grid">
+                            <div class="form-group">
+                                <label for="sv-presion">Presión Art.</label>
+                                <input type="text" id="sv-presion" class="form-control sm" placeholder="120/80">
+                            </div>
+                            <div class="form-group">
+                                <label for="sv-fc">Frec. Card. (bpm)</label>
+                                <input type="number" id="sv-fc" class="form-control sm" placeholder="75">
+                            </div>
+                            <div class="form-group">
+                                <label for="sv-sato2">Sat. Oxígeno (%)</label>
+                                <input type="number" id="sv-sato2" class="form-control sm" placeholder="98">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="btn-submit-admission">
+                        <span><i class="fa-solid fa-paper-plane"></i> Enviar Webhook de Emergencia</span>
+                        <div class="loader-spinner hidden" id="webhook-spinner"></div>
+                    </button>
+                </form>
+
+                <!-- Panel de Respuesta Técnica -->
+                <div class="technical-response-box collapsed" id="tech-resp-box">
+                    <div class="box-header" id="tech-resp-toggle">
+                        <span><i class="fa-solid fa-code"></i> Respuesta del Servidor API (JSON)</span>
+                        <i class="fa-solid fa-chevron-down arrow-icon"></i>
+                    </div>
+                    <div class="box-body">
+                        <pre><code id="json-response-code">// Los resultados técnicos aparecerán aquí al enviar el webhook</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: PANEL DE ADMISIONES HOSPITALARIAS (LIVE) -->
+        <section class="panel-section admissions-column" id="admissions-sec">
+            <div class="panel-header">
+                <div class="panel-header-title">
+                    <h2><i class="fa-solid fa-hospital-user"></i> Panel de Admisiones</h2>
+                    <p>Alertas operativas en tiempo real para el hospital</p>
+                </div>
+                <div class="badge live-badge"><span class="pulse-dot"></span> LIVE</div>
+            </div>
+
+            <div class="panel-body list-container" id="admissions-list">
+                <div class="empty-state">
+                    <i class="fa-solid fa-circle-nodes"></i>
+                    <p>Esperando alertas de ingreso...</p>
+                    <small>Usa el arnés de pruebas de la izquierda para simular un ingreso.</small>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: PANEL DEL GESTOR DE CASOS (LIVE) -->
+        <section class="panel-section cases-column" id="cases-sec">
+            <div class="panel-header">
+                <div class="panel-header-title">
+                    <h2><i class="fa-solid fa-user-tie"></i> Gestor de Casos</h2>
+                    <p>Análisis de riesgo y coberturas para la aseguradora</p>
+                </div>
+                <div class="badge live-badge"><span class="pulse-dot"></span> LIVE</div>
+            </div>
+
+            <div class="panel-body list-container" id="cases-list">
+                <div class="empty-state">
+                    <i class="fa-solid fa-shield-cat"></i>
+                    <p>Esperando análisis de casos...</p>
+                    <small>El Agente de IA cruzará el historial clínico y notificará al gestor automáticamente.</small>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <p><b>SATIE</b> — HackIAthon de Inteligencia Artificial | Agente Gemini, Firebase Functions y alertas operativas en tiempo real</p>
+    </footer>
+
+    <!-- Javascript Core -->
+    <script src="app.js"></script>
+</body>
+</html>

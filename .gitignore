@@ -1,0 +1,44 @@
+# Secrets and local runtime configuration
+.env
+.env.*
+**/.env
+**/.env.*
+*.pem
+*.key
+*.p12
+*.json.key
+service-account*.json
+
+# Python local artifacts
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.venv/
+venv/
+**/.venv/
+**/venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Firebase local/cache output
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
+# Node/local editor artifacts
+node_modules/
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Challenge documents and markdown deliverables
+docs/
+*.md
+
+# Local agent/tooling state
+.agents/
+.antigravitycli/
+.codex/
